@@ -1,37 +1,26 @@
-class WAVT extends HTMLElement {
-  connectedCallback() {
-    const text = this.innerText;
-    const speed = this.getAttribute("speed") || "1.5s";
-    const size = this.getAttribute("size") || "20px";
-    const font = this.getAttribute("font") || "Arial";
-    const wave = this.getAttribute("wave") || "updown";
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("wavt").forEach(el => {
+    const text = el.textContent;
+    const color = el.getAttribute("color") || "black";
+    const font = el.getAttribute("font") || "sans-serif";
+    const size = el.getAttribute("size") || "24px";
+    const speed = el.getAttribute("speed") || "1.5s";
+    const wave = el.getAttribute("wave") || "updown";
 
-    this.innerHTML = "";
+    const spanHTML = [...text].map((char, i) =>
+      <span style="--i:${i}; animation-duration:${speed}; animation-name:wave${capitalize(wave)}">${char}</span>
+    ).join('');
 
-    const style = document.createElement("style");
-    style.textContent = 
-      @keyframes wave {
-        0%   { transform: translateY(0); }
-        50%  { transform: translateY(-10px); }
-        100% { transform: translateY(0); }
-      }
-      .wavt-letter {
-        display: inline-block;
-        animation: wave ${speed} infinite;
-      }
-    ;
-    document.head.appendChild(style);
+    const wrapper = document.createElement("div");
+    wrapper.className = "wavt";
+    wrapper.style.color = color;
+    wrapper.style.fontFamily = font;
+    wrapper.style.fontSize = size;
+    wrapper.innerHTML = spanHTML;
+    el.replaceWith(wrapper);
+  });
 
-    [...text].forEach((char, i) => {
-      const span = document.createElement("span");
-      span.textContent = char;
-      span.className = "wavt-letter";
-      span.style.animationDelay = ${i * 0.1}s;
-      span.style.fontSize = size;
-      span.style.fontFamily = font;
-      this.appendChild(span);
-    });
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
-}
-
-customElements.define("wavt", WAVT);
+});
