@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WAVT Advanced</title>
+  <style>
+    .wavt span {
+      display: inline-block;
+      animation-name: waveUpDown;
+      animation-iteration-count: infinite;
+      animation-delay: calc(var(--i) * 0.1s);
+    }
+
+    /* Base wave animation */
+    @keyframes waveUpDown {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-10px); }
+      75% { transform: translateY(10px); }
+    }
+
+    /* Bounce style */
+    @keyframes waveBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
+
+    /* Reverse wave style */
+    @keyframes waveReverse {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(10px); }
+      75% { transform: translateY(-10px); }
+    }
+
+    /* Crazy style */
+    @keyframes waveCrazy {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg) translateY(-10px); }
+      50% { transform: rotate(-10deg) translateY(10px); }
+      75% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Your custom WAVT tags -->
+<wavt color="red" speed="1s" font="cursive" size="30px" wave="updown">Waving Text</wavt><br>
+<wavt color="blue" speed="0.8s" font="Arial" size="25px" wave="bounce">Bounce Me</wavt><br>
+<wavt color="green" speed="2s" font="monospace" size="20px" wave="reverse">Reverse Waves</wavt><br>
+<wavt color="purple" speed="1.5s" font="fantasy" size="22px" wave="crazy">Crazy Style</wavt>
+
+<script>
+  document.querySelectorAll("wavt").forEach(el => {
+    const text = el.textContent;
+    const color = el.getAttribute("color") || "black";
+    const font = el.getAttribute("font") || "sans-serif";
+    const size = el.getAttribute("size") || "24px";
+    const speed = el.getAttribute("speed") || "1.5s";
+    const wave = el.getAttribute("wave") || "updown";
+
+    const spanHTML = [...text].map((char, i) =>
+      <span style="--i:${i}; animation-duration:${speed}; animation-name:wave${capitalize(wave)}">${char}</span>
+    ).join('');
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "wavt";
+    wrapper.style.color = color;
+    wrapper.style.fontFamily = font;
+    wrapper.style.fontSize = size;
+    wrapper.innerHTML = spanHTML;
+    el.replaceWith(wrapper);
+  });
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+</script>
+
+</body>
+</html>
